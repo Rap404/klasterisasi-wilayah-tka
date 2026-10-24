@@ -1,5 +1,42 @@
 # 8. Analisis Hubungan Capaian TKA dengan Variabel Pendukung
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 from scipy import stats
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+DATA_PATH = BASE_DIR / "dataset" / "hasil_klaster_kmeans_smp.csv"
+OUTPUT_DIR = Path(__file__).resolve().parent
+GRAFIK_DIR = OUTPUT_DIR / "grafik_eda"
+
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+GRAFIK_DIR.mkdir(parents=True, exist_ok=True)
+
+# Baca dataset hasil klasterisasi
+hasil_df = pd.read_csv(DATA_PATH)
+
+fitur = [
+    "tka_rerata_mtk",
+    "rasio_murid_guru",
+    "rasio_murid_sekolah",
+    "pct_penduduk_miskin"
+]
+fitur_labels = ["TKA MTK", "Rasio M/G", "Rasio M/S", "Pmiskin (%)"]
+
+warna_klaster = {
+    "Klaster 1: Wilayah Maju": "#2563eb",
+    "Klaster 2: Wilayah Darurat Sarana Prasarana": "#f59e0b",
+    "Klaster 3: Wilayah Rentan dan Terpencil": "#dc2626"
+}
+
+label_mapping = {
+    "Klaster 1: Wilayah Maju": "Klaster 1: Wilayah Maju",
+    "Klaster 2: Wilayah Darurat Sarana Prasarana": "Klaster 2: Wilayah Darurat Sarana Prasarana",
+    "Klaster 3: Wilayah Rentan dan Terpencil": "Klaster 3: Wilayah Rentan dan Terpencil"
+}
 
 target = "tka_rerata_mtk"
 pendukung = ["rasio_murid_guru", "rasio_murid_sekolah", "pct_penduduk_miskin"]

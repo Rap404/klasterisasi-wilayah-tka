@@ -1,0 +1,4 @@
+variabel,pearson_r,pearson_p,spearman_rho,spearman_p,slope,r_kuadrat
+rasio_murid_guru,0.065,0.7467,0.113,0.5758,0.0576,0.004
+rasio_murid_sekolah,0.457,0.0167,0.456,0.0168,0.0158,0.208
+pct_penduduk_miskin,-0.622,0.0005,-0.579,0.0015,-0.5182,0.387
