@@ -226,7 +226,8 @@ plt.savefig(peta_k2_path, dpi=200, bbox_inches="tight")
 plt.close()
 print(f"Peta individu klaster & prioritas berhasil disimpan:\n-> {peta_k1_path}\n-> {peta_k2_path}")
 
-# 6. Pembuatan Peta Web Interaktif Mandiri (Leaflet.js HTML)
+# 6. Pembuatan Peta Web Interaktif Mandiri (Leaflet.js - Desain Minimalis & Bersih)
+CARTO_API_KEY = "cb1_4u6s_1_4aee1d00816286e303ed17f1"
 geojson_str = json.dumps(geojson_data)
 
 html_content = f"""<!DOCTYPE html>
@@ -234,79 +235,294 @@ html_content = f"""<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peta Interaktif Klaster & Prioritas Intervensi SMP Jawa Barat</title>
+  <title>Peta Spasial Pendidikan SMP Jawa Barat</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    body {{ margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }}
-    #map {{ height: 100vh; width: 100%; }}
-    .header-box {{
-      position: absolute; top: 15px; left: 60px; z-index: 1000;
-      background: rgba(255, 255, 255, 0.95); padding: 12px 20px;
-      border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      max-width: 450px;
+    * {{
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }}
-    .header-box h2 {{ margin: 0 0 5px 0; font-size: 16px; color: #1e293b; }}
-    .header-box p {{ margin: 0; font-size: 12px; color: #64748b; line-height: 1.4; }}
-    .legend-box {{
-      position: absolute; bottom: 25px; right: 20px; z-index: 1000;
-      background: rgba(255, 255, 255, 0.95); padding: 14px 18px;
-      border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      overflow: hidden;
+    }}
+    #map {{
+      height: 100vh;
+      width: 100%;
+      background: #e2e8f0;
+    }}
+
+    /* Sidebar Panel (Minimalist, Crisp) */
+    .dashboard-panel {{
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 1000;
+      width: 320px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }}
+
+    .panel-header {{
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }}
+    .panel-meta {{
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+    }}
+    .panel-title {{
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+    }}
+
+    /* Segmented Control */
+    .segmented-control {{
+      display: flex;
+      background: #f1f5f9;
+      padding: 2px;
+      border-radius: 6px;
+      gap: 2px;
+    }}
+    .segment-btn {{
+      flex: 1;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-align: center;
+    }}
+    .segment-btn.active {{
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }}
+
+    /* Select Dropdown */
+    .field-group {{
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }}
+    .field-label {{
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #94a3b8;
+    }}
+    .region-select {{
+      width: 100%;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
       font-size: 12px;
+      color: #334155;
+      background: #ffffff;
+      outline: none;
+      cursor: pointer;
     }}
-    .legend-item {{ display: flex; align-items: center; margin-bottom: 6px; }}
-    .legend-color {{ width: 18px; height: 18px; border-radius: 4px; margin-right: 8px; border: 1px solid #333; }}
-    .mode-switch {{
-      margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;
-      display: flex; gap: 10px;
+    .region-select:focus {{
+      border-color: #94a3b8;
     }}
-    .btn {{
-      padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: bold;
-      border: 1px solid #cbd5e1; cursor: pointer; background: white; color: #334155;
+
+    /* Real-Time Inspector / Detail Card */
+    .detail-card {{
+      border-top: 1px solid #f1f5f9;
+      padding-top: 10px;
     }}
-    .btn.active {{ background: #2563eb; color: white; border-color: #2563eb; }}
-    .custom-popup table {{ width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 6px; }}
-    .custom-popup td {{ padding: 3px 6px; border-bottom: 1px solid #f1f5f9; }}
-    .custom-popup td:first-child {{ font-weight: bold; color: #475569; }}
+    .detail-placeholder {{
+      font-size: 11px;
+      color: #94a3b8;
+      font-style: italic;
+      padding: 8px 0;
+    }}
+    .detail-region {{
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }}
+    .detail-badge {{
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }}
+    .stats-grid {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }}
+    .stat-box {{
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 4px;
+      padding: 6px 8px;
+    }}
+    .stat-label {{
+      font-size: 10px;
+      color: #64748b;
+      margin-bottom: 2px;
+    }}
+    .stat-val {{
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      font-feature-settings: "tnum";
+    }}
+
+    /* Minimalist Legend (Bottom-Right) */
+    .legend-panel {{
+      position: absolute;
+      bottom: 20px;
+      right: 16px;
+      z-index: 1000;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      padding: 10px 12px;
+      min-width: 210px;
+    }}
+    .legend-title {{
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 6px;
+    }}
+    .legend-row {{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+    }}
+    .legend-row:last-child {{
+      margin-bottom: 0;
+    }}
+    .legend-color {{
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }}
+
+    /* Tooltip */
+    .leaflet-tooltip.clean-tooltip {{
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }}
+    .leaflet-tooltip.clean-tooltip:before {{
+      border-top-color: #0f172a;
+    }}
+
+    .leaflet-control-attribution {{
+      background: rgba(255, 255, 255, 0.75) !important;
+      font-size: 10px !important;
+      color: #94a3b8 !important;
+    }}
   </style>
 </head>
 <body>
-  <div class="header-box">
-    <h2>Sistem Spasial Klasterisasi & Prioritas Pendidikan Jawa Barat</h2>
-    <p>Klik poligon kabupaten/kota untuk melihat rincian capaian TKA, kemiskinan, beban guru, dan indeks prioritas.</p>
-    <div class="mode-switch">
-      <button id="btn-klaster" class="btn active" onclick="switchMode('klaster')">Mode Klaster K-Means</button>
-      <button id="btn-prioritas" class="btn" onclick="switchMode('prioritas')">Mode Indeks Prioritas (IPI)</button>
+  <div class="dashboard-panel">
+    <div class="panel-header">
+      <span class="panel-meta">Pendidikan SMP Jawa Barat</span>
+      <h1 class="panel-title">Klasterisasi & Prioritas Wilayah</h1>
+    </div>
+
+    <div class="segmented-control">
+      <button id="btn-klaster" class="segment-btn active" onclick="switchMode('klaster')">Klaster K-Means</button>
+      <button id="btn-prioritas" class="segment-btn" onclick="switchMode('prioritas')">Prioritas Intervensi</button>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="region-dropdown">Cari Wilayah</label>
+      <select id="region-dropdown" class="region-select" onchange="focusRegion(this.value)">
+        <option value="">Pilih Kabupaten / Kota</option>
+      </select>
+    </div>
+
+    <div class="detail-card" id="detail-card">
+      <div class="detail-placeholder">Arahkan kursor atau klik wilayah untuk melihat ringkasan indikator.</div>
     </div>
   </div>
 
-  <div id="legend" class="legend-box"></div>
+  <div id="legend" class="legend-panel"></div>
   <div id="map"></div>
 
   <script>
     const geojsonData = {geojson_str};
+    const cartoKey = "{CARTO_API_KEY}";
 
-    const map = L.map('map').setView([-6.9175, 107.6191], 8);
-    L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
-      maxZoom: 18,
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-    }}).addTo(map);
+    const map = L.map('map', {{
+      center: [-6.9175, 107.6191],
+      zoom: 8,
+      zoomControl: false
+    }});
+
+    L.control.zoom({{ position: 'topright' }}).addTo(map);
+
+    L.tileLayer(
+      'https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png?key=' + cartoKey,
+      {{
+        subdomains: 'abcd',
+        maxZoom: 20,
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+      }}
+    ).addTo(map);
 
     let currentMode = 'klaster';
     let geojsonLayer;
+    let selectedLayer = null;
+    const layerMap = {{}};
 
     const klasterColors = {{
       "Klaster 1: Perkotaan, Capaian Tertinggi": "#2563eb",
-      "Klaster 2: Beban Kelas Tinggi, Capaian Menengah": "#0ea5e9",
-      "Klaster 3: Kemiskinan Tertinggi, Capaian Menengah": "#f59e0b",
+      "Klaster 2: Beban Kelas Tinggi, Capaian Menengah": "#0284c7",
+      "Klaster 3: Kemiskinan Tertinggi, Capaian Menengah": "#d97706",
       "Klaster 4: Capaian Terendah, Sekolah Kecil": "#dc2626"
     }};
 
     const prioritasColors = {{
-      "Prioritas 1 (Mendesak / Urgent)": "#dc2626",
-      "Prioritas 2 (Tinggi / High)": "#f97316",
-      "Prioritas 3 (Menengah / Moderate)": "#eab308",
-      "Prioritas 4 (Mandiri / Low)": "#16a34a"
+      "Prioritas 1 (Mendesak / Urgent)": "#b91c1c",
+      "Prioritas 2 (Tinggi / High)": "#ea580c",
+      "Prioritas 3 (Menengah / Moderate)": "#d97706",
+      "Prioritas 4 (Mandiri / Low)": "#15803d"
     }};
 
     function getColor(props) {{
@@ -320,38 +536,95 @@ html_content = f"""<!DOCTYPE html>
     function style(feature) {{
       return {{
         fillColor: getColor(feature.properties),
-        weight: 1.5,
+        weight: 1.2,
         opacity: 1,
-        color: '#1e293b',
-        dashArray: '2',
+        color: '#ffffff',
         fillOpacity: 0.75
       }};
     }}
 
-    function onEachFeature(feature, layer) {{
-      const p = feature.properties;
-      const popupContent = `
-        <div class="custom-popup">
-          <h3 style="margin:0 0 4px 0; color:#1e293b; font-size:14px;">${{p.nama_kabkota}}</h3>
-          <div style="font-size:11px; color:#64748b; margin-bottom:6px;">Status: <b>${{p.klaster_k4}}</b></div>
-          <table>
-            <tr><td>Peringkat IPI</td><td><b>#${{p.peringkat_ipi}} dari 27</b></td></tr>
-            <tr><td>Skor Prioritas (IPI)</td><td><b>${{p.skor_ipi}}</b> (${{p.kategori_prioritas}})</td></tr>
-            <tr><td>Rerata TKA MTK</td><td>${{p.tka_rerata_mtk}}</td></tr>
-            <tr><td>Penduduk Miskin</td><td>${{p.pct_penduduk_miskin}}%</td></tr>
-            <tr><td>Rasio Murid/Guru</td><td>${{p.rasio_murid_guru}}</td></tr>
-            <tr><td>Rasio Murid/Sekolah</td><td>${{p.rasio_murid_sekolah}}</td></tr>
-          </table>
+    function updateDetail(props) {{
+      const container = document.getElementById('detail-card');
+      if (!props) {{
+        container.innerHTML = '<div class="detail-placeholder">Arahkan kursor atau klik wilayah untuk melihat ringkasan indikator.</div>';
+        return;
+      }}
+      const color = currentMode === 'klaster' 
+        ? (klasterColors[props.klaster_k4] || '#64748b') 
+        : (prioritasColors[props.kategori_prioritas] || '#64748b');
+      
+      const badgeText = currentMode === 'klaster'
+        ? props.klaster_k4.split(':')[0]
+        : props.kategori_prioritas.split(' ')[0] + ' ' + (props.kategori_prioritas.split(' ')[1] || '');
+
+      container.innerHTML = `
+        <div class="detail-region">${{props.nama_kabkota}}</div>
+        <div class="detail-badge" style="background:${{color}}15; color:${{color}}; border:1px solid ${{color}}30;">
+          ${{badgeText}} &bull; Peringkat #${{props.peringkat_ipi}}
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Skor IPI</div>
+            <div class="stat-val">${{props.skor_ipi}}</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">TKA MTK</div>
+            <div class="stat-val">${{props.tka_rerata_mtk}}</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Penduduk Miskin</div>
+            <div class="stat-val">${{props.pct_penduduk_miskin}}%</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Rasio Murid/Guru</div>
+            <div class="stat-val">${{props.rasio_murid_guru}}</div>
+          </div>
         </div>
       `;
-      layer.bindPopup(popupContent);
+    }}
+
+    function onEachFeature(feature, layer) {{
+      const p = feature.properties;
+      const key = p.kode_wilayah || p.nama_kabkota;
+      layerMap[key] = layer;
+
+      layer.bindTooltip(p.nama_pendek || p.nama_kabkota, {{
+        permanent: false,
+        direction: 'center',
+        className: 'clean-tooltip'
+      }});
+
       layer.on({{
         mouseover: function(e) {{
           const l = e.target;
-          l.setStyle({{ weight: 3, color: '#000', dashArray: '', fillOpacity: 0.9 }});
+          l.setStyle({{
+            weight: 2,
+            color: '#0f172a',
+            fillOpacity: 0.9
+          }});
+          l.bringToFront();
+          updateDetail(p);
         }},
         mouseout: function(e) {{
-          geojsonLayer.resetStyle(e.target);
+          if (selectedLayer !== e.target) {{
+            geojsonLayer.resetStyle(e.target);
+          }}
+          if (!selectedLayer) {{
+            updateDetail(null);
+          }} else {{
+            updateDetail(selectedLayer.feature.properties);
+          }}
+        }},
+        click: function(e) {{
+          if (selectedLayer) geojsonLayer.resetStyle(selectedLayer);
+          selectedLayer = e.target;
+          selectedLayer.setStyle({{
+            weight: 2.5,
+            color: '#0f172a',
+            fillOpacity: 0.95
+          }});
+          updateDetail(p);
+          document.getElementById('region-dropdown').value = key;
         }}
       }});
     }}
@@ -362,6 +635,7 @@ html_content = f"""<!DOCTYPE html>
         style: style,
         onEachFeature: onEachFeature
       }}).addTo(map);
+
       updateLegend();
     }}
 
@@ -369,19 +643,19 @@ html_content = f"""<!DOCTYPE html>
       const leg = document.getElementById('legend');
       if (currentMode === 'klaster') {{
         leg.innerHTML = `
-          <b>Legenda Klaster K-Means (k=4)</b><br><br>
-          <div class="legend-item"><div class="legend-color" style="background:#2563eb"></div>Klaster 1: Perkotaan, Capaian Tertinggi</div>
-          <div class="legend-item"><div class="legend-color" style="background:#0ea5e9"></div>Klaster 2: Beban Kelas Tinggi</div>
-          <div class="legend-item"><div class="legend-color" style="background:#f59e0b"></div>Klaster 3: Kemiskinan Tertinggi</div>
-          <div class="legend-item"><div class="legend-color" style="background:#dc2626"></div>Klaster 4: Capaian Terendah, Sekolah Kecil</div>
+          <div class="legend-title">Klaster K-Means (k=4)</div>
+          <div class="legend-row"><div class="legend-color" style="background:#2563eb"></div>Klaster 1: Perkotaan Capaian Tinggi</div>
+          <div class="legend-row"><div class="legend-color" style="background:#0284c7"></div>Klaster 2: Beban Padat</div>
+          <div class="legend-row"><div class="legend-color" style="background:#d97706"></div>Klaster 3: Kemiskinan Tertinggi</div>
+          <div class="legend-row"><div class="legend-color" style="background:#dc2626"></div>Klaster 4: Capaian Terendah</div>
         `;
       }} else {{
         leg.innerHTML = `
-          <b>Legenda Prioritas Intervensi (IPI)</b><br><br>
-          <div class="legend-item"><div class="legend-color" style="background:#dc2626"></div>Prioritas 1: Mendesak (≥ 70)</div>
-          <div class="legend-item"><div class="legend-color" style="background:#f97316"></div>Prioritas 2: Tinggi (60 - 69.9)</div>
-          <div class="legend-item"><div class="legend-color" style="background:#eab308"></div>Prioritas 3: Menengah (40 - 59.9)</div>
-          <div class="legend-item"><div class="legend-color" style="background:#16a34a"></div>Prioritas 4: Mandiri (< 40)</div>
+          <div class="legend-title">Prioritas Intervensi</div>
+          <div class="legend-row"><div class="legend-color" style="background:#b91c1c"></div>Prioritas 1: Mendesak (&ge; 70)</div>
+          <div class="legend-row"><div class="legend-color" style="background:#ea580c"></div>Prioritas 2: Tinggi (60 &ndash; 69.9)</div>
+          <div class="legend-row"><div class="legend-color" style="background:#d97706"></div>Prioritas 3: Menengah (40 &ndash; 59.9)</div>
+          <div class="legend-row"><div class="legend-color" style="background:#15803d"></div>Prioritas 4: Mandiri (&lt; 40)</div>
         `;
       }}
     }}
@@ -391,9 +665,47 @@ html_content = f"""<!DOCTYPE html>
       document.getElementById('btn-klaster').classList.toggle('active', mode === 'klaster');
       document.getElementById('btn-prioritas').classList.toggle('active', mode === 'prioritas');
       renderLayer();
+      if (selectedLayer) {{
+        updateDetail(selectedLayer.feature.properties);
+      }}
+    }}
+
+    function focusRegion(key) {{
+      if (!key || !layerMap[key]) {{
+        if (selectedLayer) geojsonLayer.resetStyle(selectedLayer);
+        selectedLayer = null;
+        updateDetail(null);
+        map.fitBounds(geojsonLayer.getBounds(), {{ padding: [30, 30] }});
+        return;
+      }}
+      if (selectedLayer) geojsonLayer.resetStyle(selectedLayer);
+      selectedLayer = layerMap[key];
+      selectedLayer.setStyle({{
+        weight: 2.5,
+        color: '#0f172a',
+        fillOpacity: 0.95
+      }});
+      map.fitBounds(selectedLayer.getBounds(), {{ maxZoom: 10, padding: [60, 60] }});
+      updateDetail(selectedLayer.feature.properties);
+    }}
+
+    function initDropdown() {{
+      const select = document.getElementById('region-dropdown');
+      const features = [...geojsonData.features].sort((a, b) => 
+        a.properties.nama_kabkota.localeCompare(b.properties.nama_kabkota)
+      );
+      features.forEach(f => {{
+        const opt = document.createElement('option');
+        const key = f.properties.kode_wilayah || f.properties.nama_kabkota;
+        opt.value = key;
+        opt.textContent = `${{f.properties.nama_kabkota}} (#${{f.properties.peringkat_ipi}})`;
+        select.appendChild(opt);
+      }});
     }}
 
     renderLayer();
+    initDropdown();
+    map.fitBounds(geojsonLayer.getBounds(), {{ padding: [30, 30] }});
   </script>
 </body>
 </html>
@@ -403,4 +715,11 @@ html_out_path = OUTPUT_DIR / "peta_interaktif_jabar.html"
 with open(html_out_path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print(f"Peta Web Interaktif HTML berhasil disimpan di:\n-> {html_out_path}")
+# Simpan juga ke folder docs/index.html untuk kemudahan hosting di GitHub Pages, Vercel, Netlify
+docs_out_path = BASE_DIR / "docs" / "index.html"
+docs_out_path.parent.mkdir(parents=True, exist_ok=True)
+with open(docs_out_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"Peta Web Interaktif HTML berhasil disimpan di:\n-> {html_out_path}\n-> {docs_out_path}")
+
