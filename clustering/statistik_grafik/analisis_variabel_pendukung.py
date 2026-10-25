@@ -1,5 +1,6 @@
 # 8. Analisis Hubungan Capaian TKA dengan Variabel Pendukung
 from pathlib import Path
+import textwrap
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -26,17 +27,24 @@ fitur = [
 ]
 fitur_labels = ["TKA MTK", "Rasio M/G", "Rasio M/S", "Pmiskin (%)"]
 
+# Warna & urutan klaster dibaca dari data (Klaster 1 = capaian tertinggi ... Klaster 4 = terendah)
+palet = {1: "#2563eb", 2: "#16a34a", 3: "#f59e0b", 4: "#dc2626"}
+nama_urut = (
+    hasil_df[["klaster_k4", "nama_klaster_k4"]]
+    .drop_duplicates()
+    .sort_values("klaster_k4")["nama_klaster_k4"]
+    .tolist()
+)
 warna_klaster = {
-    "Klaster 1: Wilayah Maju": "#2563eb",
-    "Klaster 2: Wilayah Darurat Sarana Prasarana": "#f59e0b",
-    "Klaster 3: Wilayah Rentan dan Terpencil": "#dc2626"
+    n: palet[int(hasil_df.loc[hasil_df["nama_klaster_k4"] == n, "klaster_k4"].iloc[0])]
+    for n in nama_urut
 }
 
-label_mapping = {
-    "Klaster 1: Wilayah Maju": "Klaster 1: Wilayah Maju",
-    "Klaster 2: Wilayah Darurat Sarana Prasarana": "Klaster 2: Wilayah Darurat Sarana Prasarana",
-    "Klaster 3: Wilayah Rentan dan Terpencil": "Klaster 3: Wilayah Rentan dan Terpencil"
-}
+
+def label_pendek(nama, lebar=16):
+    no = nama.split(":")[0].replace("Klaster ", "K")
+    return f"{no}\n" + textwrap.fill(nama.split(": ", 1)[1], lebar)
+
 
 target = "tka_rerata_mtk"
 pendukung = ["rasio_murid_guru", "rasio_murid_sekolah", "pct_penduduk_miskin"]
@@ -85,8 +93,9 @@ plt.close()
 # 8c. Scatter plot + garis regresi per variabel pendukung
 fig, axes = plt.subplots(1, 3, figsize=(18, 5.5))
 for ax, v in zip(axes, pendukung):
-    for nama_klaster, grup in hasil_df.groupby("nama_klaster_k3"):
-        ax.scatter(grup[v], grup[target], color=warna_klaster.get(nama_klaster, "gray"),
+    for nama_klaster in nama_urut:
+        grup = hasil_df[hasil_df["nama_klaster_k4"] == nama_klaster]
+        ax.scatter(grup[v], grup[target], color=warna_klaster[nama_klaster],
                    s=70, alpha=0.85, edgecolors="black", label=nama_klaster)
     slope, intercept, r_val, p_reg, _ = stats.linregress(hasil_df[v], hasil_df[target])
     xs = np.linspace(hasil_df[v].min(), hasil_df[v].max(), 100)
@@ -96,33 +105,67 @@ for ax, v in zip(axes, pendukung):
     ax.set_xlabel(label_pendukung[v])
     ax.set_ylabel("Rerata TKA Matematika")
     ax.grid(True, linestyle="--", alpha=0.5)
-axes[0].legend(fontsize=7, loc="best")
+axes[0].legend(fontsize=6.5, loc="best")
 plt.suptitle("Hubungan Capaian TKA Matematika dengan Variabel Pendukung", fontsize=13, fontweight="bold")
 plt.tight_layout()
 plt.savefig(GRAFIK_DIR / "scatter_regresi_tka.png", dpi=200, bbox_inches="tight")
 plt.close()
 
 # 8d. Perbedaan TKA antar-klaster (ANOVA satu arah + Kruskal-Wallis)
-kelompok = [g[target].values for _, g in hasil_df.groupby("nama_klaster_k3")]
+# CATATAN: TKA Matematika ikut menjadi fitur pembentuk klaster, sehingga perbedaan TKA antar-klaster
+# sebagian bersifat by construction. Uji ini dipakai sebagai gambaran deskriptif, bukan bukti independen.
+kelompok = [hasil_df.loc[hasil_df["nama_klaster_k4"] == n, target].values for n in nama_urut]
 f_stat, p_anova = stats.f_oneway(*kelompok)
 h_stat, p_kw = stats.kruskal(*kelompok)
-print("\n=== UJI PERBEDAAN TKA MTK ANTAR-KLASTER ===")
+print("\n=== UJI PERBEDAAN TKA MTK ANTAR-KLASTER (deskriptif) ===")
 print(f"ANOVA         : F = {f_stat:.3f}, p = {p_anova:.4f}")
 print(f"Kruskal-Wallis: H = {h_stat:.3f}, p = {p_kw:.4f}")
 
 # 8e. Boxplot TKA per klaster
-fig, ax = plt.subplots(figsize=(8, 6))
-nama_urut = list(label_mapping.values())
-data_box = [hasil_df.loc[hasil_df["nama_klaster_k3"] == n, target] for n in nama_urut]
-bp = ax.boxplot(data_box, patch_artist=True, tick_labels=["Wilayah\nMaju", "Darurat\nSarpras", "Rentan &\nTerpencil"])
+fig, ax = plt.subplots(figsize=(10, 6))
+data_box = [hasil_df.loc[hasil_df["nama_klaster_k4"] == n, target] for n in nama_urut]
+bp = ax.boxplot(data_box, patch_artist=True, tick_labels=[label_pendek(n) for n in nama_urut])
 for patch, n in zip(bp["boxes"], nama_urut):
     patch.set_facecolor(warna_klaster[n])
     patch.set_alpha(0.7)
 ax.set_ylabel("Rerata TKA Matematika")
 ax.set_title("Sebaran TKA Matematika per Klaster", fontsize=12, fontweight="bold")
+ax.tick_params(axis="x", labelsize=8)
 ax.grid(True, linestyle="--", alpha=0.5, axis="y")
 plt.tight_layout()
 plt.savefig(GRAFIK_DIR / "boxplot_tka_per_klaster.png", dpi=200, bbox_inches="tight")
 plt.close()
+
+
+# 8f. Regresi berganda EKSPLORATIF (dasar pemilihan komponen dan bobot indeks prioritas)
+# CATATAN: n = 27 dan prediktor saling berkaitan; hasil dibaca sebagai gambaran asosiasi, bukan sebab-akibat.
+# Rasio murid:guru berkorelasi lemah dengan TKA secara sederhana, tetapi koefisien parsialnya bisa
+# berubah setelah kemiskinan dan ukuran sekolah dikendalikan (wilayah miskin cenderung berrasio longgar).
+yv = hasil_df[target].values
+Xm = np.column_stack([np.ones(len(yv))] + [hasil_df[v].values for v in pendukung])
+b = np.linalg.lstsq(Xm, yv, rcond=None)[0]
+resid = yv - Xm @ b
+n_obs, k_par = Xm.shape
+s2 = resid @ resid / (n_obs - k_par)
+se = np.sqrt(np.diag(s2 * np.linalg.inv(Xm.T @ Xm)))
+t_val = b / se
+p_val = 2 * (1 - stats.t.cdf(np.abs(t_val), n_obs - k_par))
+sst = (yv - yv.mean()) @ (yv - yv.mean())
+r2 = 1 - (resid @ resid) / sst
+r2_adj = 1 - (1 - r2) * (n_obs - 1) / (n_obs - k_par)
+beta_std = b[1:] * Xm[:, 1:].std(axis=0, ddof=1) / yv.std(ddof=1)
+
+reg_df = pd.DataFrame({
+    "variabel": ["konstanta"] + pendukung,
+    "koefisien": np.round(b, 4),
+    "std_error": np.round(se, 4),
+    "p_value": np.round(p_val, 4),
+    "beta_standar": [np.nan] + list(np.round(beta_std, 3)),
+})
+reg_csv = OUTPUT_DIR / "regresi_berganda_tka.csv"
+reg_df.to_csv(reg_csv, index=False)
+print("\n=== REGRESI BERGANDA EKSPLORATIF (TKA MTK ~ pendukung) ===")
+print(reg_df.to_string(index=False))
+print(f"R2 = {r2:.3f} | R2 terkoreksi = {r2_adj:.3f} | n = {n_obs}")
 
 print(f"\nAnalisis hubungan TKA selesai. Output tersimpan di: {OUTPUT_DIR}")

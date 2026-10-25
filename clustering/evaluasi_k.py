@@ -28,6 +28,8 @@ fitur = [
 
 X = df[fitur].values
 
+K_TERPILIH = 4  # k yang dipakai pada analisis utama
+
 # 3. Uji nilai k dari 2 sampai 8
 k_range = range(2, 9)
 hasil_evaluasi = []
@@ -56,6 +58,7 @@ csv_output = OUTPUT_DIR / "evaluasi_optimal_k.csv"
 df_eval.to_csv(csv_output, index=False)
 print("=== TABEL EVALUASI JUMLAH KLASTER (k) ===")
 print(df_eval.to_string(index=False))
+print(f"\nk terpilih untuk analisis utama: {K_TERPILIH}")
 
 # 4. Buat Grafik Perbandingan Metrik
 fig, axes = plt.subplots(1, 3, figsize=(18, 5))
@@ -83,6 +86,12 @@ axes[2].set_xlabel("Jumlah Klaster (k)")
 axes[2].set_ylabel("Davies-Bouldin Index")
 axes[2].grid(True, linestyle="--", alpha=0.6)
 axes[2].set_xticks(list(k_range))
+
+# Tandai k terpilih pada ketiga grafik
+for ax in axes:
+    ax.axvline(K_TERPILIH, color="gray", linestyle=":", linewidth=1.5)
+    ax.annotate(f"k={K_TERPILIH} dipilih", xy=(K_TERPILIH, ax.get_ylim()[1]), xytext=(4, -14),
+                textcoords="offset points", fontsize=8, color="gray")
 
 plt.suptitle("Evaluasi Penentuan Nilai Optimal k (K-Means Clustering SMP Jabar)", fontsize=14, fontweight="bold", y=1.03)
 plt.tight_layout()

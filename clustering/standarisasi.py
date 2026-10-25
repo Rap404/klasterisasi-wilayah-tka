@@ -8,7 +8,12 @@ DATA_PATH = BASE_DIR / "dataset" / "fitur_kandidat_kmeans_smp.csv"
 # 1. Baca dataset
 df = pd.read_csv(DATA_PATH)
 
-# 2. Pilih lima fitur klasterisasi
+# kode_wilayah sering terbaca float (32.10 -> 32.1): bangun ulang dari kode_bps sebagai teks
+if "kode_bps" in df.columns:
+    _kb = df["kode_bps"].astype(str).str.replace(r"\.0$", "", regex=True)
+    df["kode_wilayah"] = _kb.str[:2] + "." + _kb.str[2:]
+
+# 2. Pilih empat fitur klasterisasi
 fitur = [
     "tka_rerata_mtk",
     "rasio_murid_guru",
