@@ -1,0 +1,12 @@
+Variabel_1,Variabel_2,Korelasi_r,Kategori
+guru_total,murid_total,0.9869,Sangat Kuat (Multikolinearitas)
+tka_rerata_bind,tka_rerata_mtk,0.9776,Sangat Kuat (Multikolinearitas)
+guru_total,tkp_total,0.9573,Sangat Kuat (Multikolinearitas)
+sekolah_total,guru_total,0.9552,Sangat Kuat (Multikolinearitas)
+sekolah_total,murid_total,0.9497,Sangat Kuat (Multikolinearitas)
+murid_total,tkp_total,0.9395,Sangat Kuat (Multikolinearitas)
+tkp_total,tkp_s1_ke_atas,0.9086,Sangat Kuat (Multikolinearitas)
+guru_total,penduduk_miskin_ribu,0.8879,Sangat Kuat (Multikolinearitas)
+sekolah_total,penduduk_miskin_ribu,0.8867,Sangat Kuat (Multikolinearitas)
+murid_total,penduduk_miskin_ribu,0.8788,Sangat Kuat (Multikolinearitas)
+sekolah_total,tkp_total,0.872,Sangat Kuat (Multikolinearitas)

@@ -1,5 +1,0 @@
-variabel,koefisien,std_error,p_value,beta_standar
-konstanta,44.9064,2.7718,0.0,
-rasio_murid_guru,-0.314,0.1377,0.0322,-0.355
-rasio_murid_sekolah,0.017,0.0053,0.0037,0.492
-pct_penduduk_miskin,-0.5201,0.1169,0.0002,-0.625

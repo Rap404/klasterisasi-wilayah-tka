@@ -1,1 +1,18 @@
-scrapping/_pycache_/
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE & Editor Config
+.vscode/
+.idea/
+*.sublime-workspace
+.DS_Store
+Thumbs.db

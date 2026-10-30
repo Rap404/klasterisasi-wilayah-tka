@@ -1,0 +1,4 @@
+variabel_pendukung,pearson_r,pearson_p,spearman_rho,spearman_p,slope_regresi,intercept,stderr
+rasio_murid_guru,0.0652,0.7467,0.1127,0.5758,0.0576,39.5285,0.1764
+rasio_murid_sekolah,0.4566,0.0167,0.456,0.0168,0.0158,35.5531,0.0062
+pct_penduduk_miskin,-0.6225,0.0005,-0.5794,0.0015,-0.5182,44.5266,0.1303
