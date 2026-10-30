@@ -82,10 +82,10 @@ def get_polygon_center(coordinates):
 
 # Definisi palet warna
 warna_klaster_map = {
-    "Klaster 1: Perkotaan, Capaian Tertinggi": "#2563eb",         # Biru (Perkotaan Unggul)
+    "Klaster 1: Perkotaan, Capaian Tinggi": "#2563eb",         # Biru (Perkotaan Unggul)
     "Klaster 2: Beban Kelas Tinggi, Capaian Menengah": "#0ea5e9", # Cyan (Beban Murid/Guru Tinggi)
-    "Klaster 3: Kemiskinan Tertinggi, Capaian Menengah": "#f59e0b", # Amber/Oranye (Kemiskinan Tinggi)
-    "Klaster 4: Capaian Terendah, Sekolah Kecil": "#dc2626",      # Merah (TKA Rendah & Sekolah Kecil)
+    "Klaster 3: Kemiskinan Tinggi, Capaian Menengah": "#f59e0b", # Amber/Oranye (Kemiskinan Tinggi)
+    "Klaster 4: Capaian Rendah, Skala Sekolah Terbatas": "#dc2626", # Merah (TKA Rendah & Skala Terbatas)
 }
 
 warna_prioritas_map = {
@@ -129,10 +129,10 @@ ax1.grid(True, linestyle=":", alpha=0.4)
 
 from matplotlib.patches import Patch
 leg_k1 = [
-    Patch(facecolor="#2563eb", edgecolor="black", label="Klaster 1: Perkotaan, Capaian Tertinggi"),
+    Patch(facecolor="#2563eb", edgecolor="black", label="Klaster 1: Perkotaan, Capaian Tinggi"),
     Patch(facecolor="#0ea5e9", edgecolor="black", label="Klaster 2: Beban Kelas Tinggi, Capaian Menengah"),
-    Patch(facecolor="#f59e0b", edgecolor="black", label="Klaster 3: Kemiskinan Tertinggi, Capaian Menengah"),
-    Patch(facecolor="#dc2626", edgecolor="black", label="Klaster 4: Capaian Terendah, Sekolah Kecil")
+    Patch(facecolor="#f59e0b", edgecolor="black", label="Klaster 3: Kemiskinan Tinggi, Capaian Menengah"),
+    Patch(facecolor="#dc2626", edgecolor="black", label="Klaster 4: Capaian Rendah, Skala Sekolah Terbatas")
 ]
 ax1.legend(handles=leg_k1, loc="lower left", fontsize=9, framealpha=0.95)
 
@@ -512,10 +512,10 @@ html_content = f"""<!DOCTYPE html>
     const layerMap = {{}};
 
     const klasterColors = {{
-      "Klaster 1: Perkotaan, Capaian Tertinggi": "#2563eb",
+      "Klaster 1: Perkotaan, Capaian Tinggi": "#2563eb",
       "Klaster 2: Beban Kelas Tinggi, Capaian Menengah": "#0284c7",
-      "Klaster 3: Kemiskinan Tertinggi, Capaian Menengah": "#d97706",
-      "Klaster 4: Capaian Terendah, Sekolah Kecil": "#dc2626"
+      "Klaster 3: Kemiskinan Tinggi, Capaian Menengah": "#d97706",
+      "Klaster 4: Capaian Rendah, Skala Sekolah Terbatas": "#dc2626"
     }};
 
     const prioritasColors = {{
@@ -644,10 +644,10 @@ html_content = f"""<!DOCTYPE html>
       if (currentMode === 'klaster') {{
         leg.innerHTML = `
           <div class="legend-title">Klaster K-Means (k=4)</div>
-          <div class="legend-row"><div class="legend-color" style="background:#2563eb"></div>Klaster 1: Perkotaan Capaian Tinggi</div>
-          <div class="legend-row"><div class="legend-color" style="background:#0284c7"></div>Klaster 2: Beban Padat</div>
-          <div class="legend-row"><div class="legend-color" style="background:#d97706"></div>Klaster 3: Kemiskinan Tertinggi</div>
-          <div class="legend-row"><div class="legend-color" style="background:#dc2626"></div>Klaster 4: Capaian Terendah</div>
+          <div class="legend-row"><div class="legend-color" style="background:#2563eb"></div>Klaster 1: Perkotaan, Capaian Tinggi</div>
+          <div class="legend-row"><div class="legend-color" style="background:#0284c7"></div>Klaster 2: Beban Kelas Tinggi</div>
+          <div class="legend-row"><div class="legend-color" style="background:#d97706"></div>Klaster 3: Kemiskinan Tinggi</div>
+          <div class="legend-row"><div class="legend-color" style="background:#dc2626"></div>Klaster 4: Capaian Rendah, Skala Terbatas</div>
         `;
       }} else {{
         leg.innerHTML = `

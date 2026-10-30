@@ -1,5 +1,5 @@
 nama_klaster_k4,jumlah_wilayah,jumlah_kota,tka_rerata_mtk,rasio_murid_guru,rasio_murid_sekolah,pct_penduduk_miskin
-"Klaster 1: Perkotaan, Capaian Tertinggi",5,5,44.09,19.19,352.96,4.03
+"Klaster 1: Perkotaan, Capaian Tinggi",5,5,44.09,19.19,352.96,4.03
 "Klaster 2: Beban Kelas Tinggi, Capaian Menengah",6,1,40.31,21.22,358.21,6.42
-"Klaster 3: Kemiskinan Tertinggi, Capaian Menengah",9,2,40.21,17.46,334.32,9.97
-"Klaster 4: Capaian Terendah, Sekolah Kecil",7,1,38.83,16.75,241.73,8.1
+"Klaster 3: Kemiskinan Tinggi, Capaian Menengah",9,2,40.21,17.46,334.32,9.97
+"Klaster 4: Capaian Rendah, Skala Sekolah Terbatas",7,1,38.83,16.75,241.73,8.1

@@ -29,7 +29,7 @@ Pemerataan kualitas pendidikan jenjang Sekolah Menengah Pertama (SMP) di Provins
 
 Proyek data mining ini bertujuan untuk:
 * Mengidentifikasi pola disparitas pendidikan di 27 kabupaten/kota Jawa Barat secara objektif dan matematis.
-* Mengelompokkan wilayah ke dalam 4 klaster profil karakteristik yang komprehensif (*Klaster 1: Perkotaan Capaian Tertinggi*, *Klaster 2: Beban Kelas Tinggi, Capaian Menengah*, *Klaster 3: Kemiskinan Tertinggi, Capaian Menengah*, dan *Klaster 4: Capaian Terendah, Sekolah Kecil*).
+* Mengelompokkan wilayah ke dalam 4 klaster profil karakteristik yang komprehensif (*Klaster 1: Perkotaan, Capaian Tinggi*, *Klaster 2: Beban Kelas Tinggi, Capaian Menengah*, *Klaster 3: Kemiskinan Tinggi, Capaian Menengah*, dan *Klaster 4: Capaian Rendah, Skala Sekolah Terbatas*).
 * Menyusun **Indeks Prioritas Intervensi (IPI)** berbasis pemodelan kuantitatif untuk memberikan panduan urutan peringkat alokasi anggaran dan program afirmasi pendidikan.
 
 ---
@@ -166,46 +166,51 @@ Dijalankan melalui skrip [`clustering/kmeans_clustering.py`](file:///clustering/
 
 Tabel ringkasan rata-rata nilai asli tiap klaster yang disimpan pada [`clustering/statistik_grafik/profil_klaster_smp.csv`](file:///clustering/statistik_grafik/profil_klaster_smp.csv):
 
-| Fitur / Indikator | Klaster 1: Perkotaan Capaian Tertinggi | Klaster 2: Beban Kelas Tinggi | Klaster 3: Kemiskinan Tertinggi | Klaster 4: Capaian Terendah, Sekolah Kecil | Rerata Jabar |
+| Fitur / Indikator | Klaster 1: Perkotaan, Capaian Tinggi | Klaster 2: Beban Kelas Tinggi | Klaster 3: Kemiskinan Tinggi | Klaster 4: Capaian Rendah, Skala Sekolah Terbatas | Rerata Jabar |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Jumlah Wilayah** | **5 daerah** (semua Kota) | **6 daerah** (5 Kab, 1 Kota) | **9 daerah** (7 Kab, 2 Kota) | **7 daerah** (6 Kab, 1 Kota) | 27 daerah |
-| **Rerata TKA Matematika** | **44.09** *(Tertinggi)* | **40.31** *(Menengah)* | **40.21** *(Menengah)* | **38.83** *(Terendah)* | 40.59 |
+| **Rerata TKA Matematika** | **44.09** *(Tinggi)* | **40.31** *(Menengah)* | **40.21** *(Menengah)* | **38.83** *(Rendah)* | 40.59 |
 | **Rasio Murid per Guru** | **19.19** | **21.22** *(Paling Padat)* | **17.46** | **16.75** *(Longgar)* | 18.43 |
-| **Rasio Murid per Sekolah**| **352.96** | **358.21** *(Terbesar)* | **334.32** | **241.73** *(Sekolah Kecil)* | 319.06 |
-| **% Penduduk Miskin** | **4.03%** *(Terendah)* | **6.42%** *(Rendah-Sedang)* | **9.97%** *(Tertinggi)* | **8.10%** *(Sedang-Tinggi)* | 7.59% |
+| **Rasio Murid per Sekolah**| **352.96** | **358.21** *(Besar)* | **334.32** | **241.73** *(Skala Terbatas)* | 319.06 |
+| **% Penduduk Miskin** | **4.03%** *(Rendah)* | **6.42%** *(Rendah-Sedang)* | **9.97%** *(Tinggi)* | **8.10%** *(Sedang-Tinggi)* | 7.59% |
 
 ---
 
 ### Penjelasan & Anggota Masing-Masing Klaster ($k=4$)
 
-#### 1. Klaster 1: Perkotaan, Capaian Tertinggi (5 Daerah)
+#### 1. Klaster 1: Perkotaan, Capaian Tinggi (5 Daerah)
 * **Anggota**: *Kota Bandung, Kota Bekasi, Kota Depok, Kota Cimahi, Kota Bogor*.
 * **Karakteristik**:
-  * Seluruh anggotanya adalah kota metropolitan utama.
-  * Capaian TKA Matematika tertinggi di Jawa Barat (rata-rata 44.09).
-  * Persentase kemiskinan paling rendah (rata-rata 4.03%, Depok terendah hanya 2.31%).
+  * Seluruh anggotanya adalah kota otonom metropolitan utama.
+  * Capaian TKA Matematika konsisten pada taraf tinggi (rata-rata 44.09, rentang 43.35 - 44.71).
+  * Persentase kemiskinan rendah (rata-rata 4.03%, rentang 2.31% - 5.89%).
 
 #### 2. Klaster 2: Beban Kelas Tinggi, Capaian Menengah (6 Daerah)
 * **Anggota**: *Kabupaten Bogor, Kabupaten Bandung, Kabupaten Purwakarta, Kabupaten Karawang, Kabupaten Bekasi, Kota Sukabumi*.
 * **Karakteristik**:
   * Didominasi kawasan penyangga industri dengan populasi siswa sangat padat.
-  * **Krisis Beban Guru & Gedung**: Rasio murid per guru tertinggi di Jabar (**21.22**, Karawang bahkan **24.23** dan Bogor **23.00**), serta rasio murid per sekolah terbesar (**358.21**).
+  * **Krisis Beban Guru & Gedung**: Rasio murid per guru tinggi (**21.22**, Karawang bahkan **24.23** dan Bogor **23.00**), serta rasio murid per sekolah terbesar (**358.21**).
 
-#### 3. Klaster 3: Kemiskinan Tertinggi, Capaian Menengah (9 Daerah)
+#### 3. Klaster 3: Kemiskinan Tinggi, Capaian Menengah (9 Daerah)
 * **Anggota**: *Kabupaten Kuningan, Kabupaten Cirebon, Kabupaten Majalengka, Kabupaten Sumedang, Kabupaten Indramayu, Kabupaten Subang, Kabupaten Bandung Barat, Kota Cirebon, Kota Tasikmalaya*.
 * **Karakteristik**:
   * Terkonsentrasi di wilayah Pantura dan Ciayumajakuning.
-  * **Tingkat Kemiskinan Tertinggi di Jabar**: Rata-rata **9.97%** (Indramayu 11.02%, Kuningan 10.74%, Majalengka 10.31%, Cirebon 10.23%). Capaian TKA berada di level menengah (40.21).
+  * **Tingkat Kemiskinan Tinggi di Jabar**: Rata-rata **9.97%** (rentang 8.66% – 11.02%, dengan Indramayu 11.02%, Kuningan 10.74%, Majalengka 10.31%, Cirebon 10.23%). Capaian TKA berada di level menengah (40.21).
 
-#### 4. Klaster 4: Capaian Terendah, Sekolah Kecil (7 Daerah)
+#### 4. Klaster 4: Capaian Rendah, Skala Sekolah Terbatas (7 Daerah)
 * **Anggota**: *Kabupaten Sukabumi, Kabupaten Cianjur, Kabupaten Garut, Kabupaten Tasikmalaya, Kabupaten Ciamis, Kabupaten Pangandaran, Kota Banjar*.
 * **Karakteristik**:
   * Mendominasi wilayah Jawa Barat bagian selatan dan Priangan Timur.
-  * **Sekolah-sekolah Kecil Terpencil**: Rasio murid per sekolah sangat rendah (**241.73**, bahkan Tasikmalaya 205, Cianjur 219, Sukabumi 223) akibat dispersi geografis perbukitan dan pesisir.
-  * **Capaian Nilai Paling Rentan**: Memiliki rerata TKA Matematika paling rendah di Jawa Barat (**38.83**, Cianjur 37.59).
-* **Output Grafik**: [`clustering/statistik_grafik/grafik_eda/visualisasi_klaster_kmeans.png`](file:///clustering/statistik_grafik/grafik_eda/visualisasi_klaster_kmeans.png).
+  * **Skala Sekolah Terbatas & TKA Rendah**: Rasio murid per sekolah rendah (**241.73**, Tasikmalaya 205.9, Cianjur 219.1, Sukabumi 223.1 murid/sekolah) serta capaian akademik pada taraf rendah (rata-rata TKA 38.83, rentang 37.59 – 39.75).
+  * **Output Grafik Visualisasi Klaster**:
+  * Panel Gabungan 4-in-1: [`clustering/statistik_grafik/grafik_eda/visualisasi_klaster_kmeans.png`](file:///clustering/statistik_grafik/grafik_eda/visualisasi_klaster_kmeans.png)
+  * Grafik Terpisah 1 (TKA vs Kemiskinan): [`clustering/statistik_grafik/grafik_eda/klaster_scatter_tka_vs_kemiskinan.png`](file:///clustering/statistik_grafik/grafik_eda/klaster_scatter_tka_vs_kemiskinan.png)
+  * Grafik Terpisah 2 (Beban Guru vs Skala Sekolah): [`clustering/statistik_grafik/grafik_eda/klaster_scatter_guru_vs_sekolah.png`](file:///clustering/statistik_grafik/grafik_eda/klaster_scatter_guru_vs_sekolah.png)
+  * Grafik Terpisah 3 (Fingerprint Z-Score 4 Fitur): [`clustering/statistik_grafik/grafik_eda/klaster_fingerprint_zscore.png`](file:///clustering/statistik_grafik/grafik_eda/klaster_fingerprint_zscore.png)
+  * Grafik Terpisah 4 (Distribusi Daerah per Klaster): [`clustering/statistik_grafik/grafik_eda/klaster_distribusi_wilayah.png`](file:///clustering/statistik_grafik/grafik_eda/klaster_distribusi_wilayah.png)
 
 ---
+
 
 ## Tahap 7: Analisis Inferensial Hubungan Variabel Pendukung (ANOVA & Regresi)
 
@@ -283,33 +288,33 @@ Hasil komputasi lengkap disimpan pada [`dataset/indeks_prioritas_intervensi_smp.
 
 | Peringkat | Kabupaten / Kota | Skor IPI (0-100) | Kategori Prioritas | Klaster K-Means ($k=4$) | Faktor Pemicu Utama Intervensi |
 | :---: | :--- | :---: | :---: | :---: | :--- |
-| **1** | **Kab. Cianjur** | **89.92** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Terendah | Capaian TKA terendah se-Jabar (37.59), kemiskinan 9.82%, sekolah kecil (219 m/s) |
-| **2** | **Kab. Indramayu** | **83.67** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 3: Kemiskinan Tertinggi | Kemiskinan tertinggi di Jabar (11.02%) & TKA sangat rendah (38.32) |
-| **3** | **Kab. Garut** | **79.69** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Terendah | TKA sangat rendah (38.48), kemiskinan 9.39%, sekolah tersebar di pegunungan |
-| **4** | **Kab. Tasikmalaya** | **78.23** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Terendah | Kemiskinan 10.15%, TKA rendah (38.85), sekolah terkecil se-Jabar (205 m/s) |
-| **5** | **Kab. Sukabumi** | **74.36** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Terendah | TKA sangat rendah (38.39), dispersi geografis sekolah kecil (223 m/s) |
-| **6** | **Kab. Majalengka** | **71.16** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 3: Kemiskinan Tertinggi | Kemiskinan sangat tinggi (10.31%), TKA di bawah rata-rata (39.29) |
-| **7** | **Kab. Cirebon** | **70.14** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 3: Kemiskinan Tertinggi | Kemiskinan sangat tinggi (10.23%), TKA di bawah rata-rata (39.10) |
-| **8** | **Kab. Subang** | **69.49** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 3: Kemiskinan Tertinggi | Kemiskinan tinggi (9.23%), TKA 39.00 |
-| **9** | **Kab. Bandung Barat** | **66.93** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 3: Kemiskinan Tertinggi | Kemiskinan tinggi (9.87%), rasio beban guru padat (19.39) |
+| **1** | **Kab. Cianjur** | **89.92** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Rendah, Skala Terbatas | TKA terendah (37.59), kemiskinan 9.82%, skala sekolah terbatas (219 m/s) |
+| **2** | **Kab. Indramayu** | **83.67** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 3: Kemiskinan Tinggi | Kemiskinan tinggi (11.02%) & TKA sangat rendah (38.32) |
+| **3** | **Kab. Garut** | **79.69** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Rendah, Skala Terbatas | TKA rendah (38.48), kemiskinan 9.39%, kapasitas sekolah terbatas |
+| **4** | **Kab. Tasikmalaya** | **78.23** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Rendah, Skala Terbatas | Kemiskinan 10.15%, TKA rendah (38.85), murid/sekolah terkecil (205 m/s) |
+| **5** | **Kab. Sukabumi** | **74.36** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 4: Capaian Rendah, Skala Terbatas | TKA rendah (38.39), skala sekolah terbatas (223 m/s) |
+| **6** | **Kab. Majalengka** | **71.16** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 3: Kemiskinan Tinggi | Kemiskinan tinggi (10.31%), TKA di bawah rata-rata (39.29) |
+| **7** | **Kab. Cirebon** | **70.14** | 🔴 **Prioritas 1 (Mendesak)** | Klaster 3: Kemiskinan Tinggi | Kemiskinan tinggi (10.23%), TKA di bawah rata-rata (39.10) |
+| **8** | **Kab. Subang** | **69.49** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 3: Kemiskinan Tinggi | Kemiskinan tinggi (9.23%), TKA 39.00 |
+| **9** | **Kab. Bandung Barat** | **66.93** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 3: Kemiskinan Tinggi | Kemiskinan tinggi (9.87%), rasio beban guru padat (19.39) |
 | **10** | **Kab. Purwakarta** | **66.46** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 2: Beban Kelas Tinggi | Beban guru padat (20.25), TKA di bawah rata-rata (39.41) |
-| **11** | **Kab. Ciamis** | **64.32** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 4: Capaian Terendah | TKA rendah (39.11), sekolah kecil di Priangan Timur |
+| **11** | **Kab. Ciamis** | **64.32** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 4: Capaian Rendah, Skala Terbatas | TKA rendah (39.11), skala sekolah terbatas di Priangan Timur |
 | **12** | **Kab. Karawang** | **63.42** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 2: Beban Kelas Tinggi | Rasio murid per guru tertinggi di Jabar (24.23), beban sekolah padat (442 m/s) |
-| **13** | **Kab. Pangandaran** | **62.87** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 4: Capaian Terendah | Sekolah kecil pesisir (238 m/s), kemiskinan 8.03% |
-| **14** | **Kota Tasikmalaya** | **61.70** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 3: Kemiskinan Tertinggi | Kemiskinan perkotaan tertinggi (10.84%) |
+| **13** | **Kab. Pangandaran** | **62.87** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 4: Capaian Rendah, Skala Terbatas | Skala sekolah terbatas pesisir (238 m/s), kemiskinan 8.03% |
+| **14** | **Kota Tasikmalaya** | **61.70** | 🟠 **Prioritas 2 (Tinggi)** | Klaster 3: Kemiskinan Tinggi | Kemiskinan perkotaan tinggi (10.84%) |
 | **15** | Kab. Bogor | 59.35 | 🟡 Prioritas 3 (Menengah) | Klaster 2: Beban Kelas Tinggi | Beban guru sangat tinggi (23.00), sekolah padat |
-| **16** | Kab. Sumedang | 58.63 | 🟡 Prioritas 3 (Menengah) | Klaster 3: Kemiskinan Tertinggi | Kemiskinan 8.81% |
-| **17** | Kab. Kuningan | 53.83 | 🟡 Prioritas 3 (Menengah) | Klaster 3: Kemiskinan Tertinggi | Kemiskinan 10.74%, TKA moderat (41.59) |
-| **18** | Kota Banjar | 53.76 | 🟡 Prioritas 3 (Menengah) | Klaster 4: Capaian Terendah | TKA 39.75, sekolah kecil |
+| **16** | Kab. Sumedang | 58.63 | 🟡 Prioritas 3 (Menengah) | Klaster 3: Kemiskinan Tinggi | Kemiskinan 8.81% |
+| **17** | Kab. Kuningan | 53.83 | 🟡 Prioritas 3 (Menengah) | Klaster 3: Kemiskinan Tinggi | Kemiskinan 10.74%, TKA moderat (41.59) |
+| **18** | Kota Banjar | 53.76 | 🟡 Prioritas 3 (Menengah) | Klaster 4: Capaian Rendah, Skala Terbatas | TKA 39.75, skala sekolah terbatas |
 | **19** | Kab. Bandung | 52.58 | 🟡 Prioritas 3 (Menengah) | Klaster 2: Beban Kelas Tinggi | Beban guru padat (20.11), sekolah padat (387 m/s) |
 | **20** | Kab. Bekasi | 50.55 | 🟡 Prioritas 3 (Menengah) | Klaster 2: Beban Kelas Tinggi | Beban guru padat (20.38) |
 | **21** | Kota Sukabumi | 43.79 | 🟡 Prioritas 3 (Menengah) | Klaster 2: Beban Kelas Tinggi | Rerata moderat |
-| **22** | Kota Cirebon | 36.38 | 🟢 Prioritas 4 (Mandiri) | Klaster 3: Kemiskinan Tertinggi | TKA tinggi (43.31), fasilitas memadai |
-| **23** | Kota Bogor | 29.19 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan Capaian Tertinggi | TKA tinggi (43.73), kota mandiri |
-| **24** | Kota Depok | 22.62 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan Capaian Tertinggi | Kemiskinan terendah se-Jabar (2.31%), TKA tinggi (43.35) |
-| **25** | Kota Bekasi | 17.17 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan Capaian Tertinggi | TKA tertinggi di Jabar (44.71), kemiskinan rendah (3.96%) |
-| **26** | Kota Bandung | 16.84 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan Capaian Tertinggi | TKA sangat tinggi (44.33), kemiskinan rendah (3.78%) |
-| **27** | Kota Cimahi | 16.14 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan Capaian Tertinggi | TKA sangat tinggi (44.32), kemiskinan rendah (4.20%) |
+| **22** | Kota Cirebon | 36.38 | 🟢 Prioritas 4 (Mandiri) | Klaster 3: Kemiskinan Tinggi | TKA tinggi (43.31), fasilitas memadai |
+| **23** | Kota Bogor | 29.19 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan, Capaian Tinggi | TKA tinggi (43.73), kota mandiri |
+| **24** | Kota Depok | 22.62 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan, Capaian Tinggi | Kemiskinan terendah se-Jabar (2.31%), TKA tinggi (43.35) |
+| **25** | Kota Bekasi | 17.17 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan, Capaian Tinggi | TKA tertinggi di Jabar (44.71), kemiskinan rendah (3.96%) |
+| **26** | Kota Bandung | 16.84 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan, Capaian Tinggi | TKA sangat tinggi (44.33), kemiskinan rendah (3.78%) |
+| **27** | Kota Cimahi | 16.14 | 🟢 Prioritas 4 (Mandiri) | Klaster 1: Perkotaan, Capaian Tinggi | TKA sangat tinggi (44.32), kemiskinan rendah (4.20%) |
 
 * **Output Grafik Visualisasi**: [`clustering/statistik_grafik/grafik_eda/ranking_prioritas_intervensi.png`](file:///clustering/statistik_grafik/grafik_eda/ranking_prioritas_intervensi.png) dan [`clustering/statistik_grafik/grafik_eda/kontribusi_komponen_indeks.png`](file:///clustering/statistik_grafik/grafik_eda/kontribusi_komponen_indeks.png).
 
@@ -326,7 +331,7 @@ Dijalankan melalui skrip [`clustering/gabung_geospasial.py`](file:///clustering/
 
 ### 2. Peta Tematik Spasial (Choropleth Map)
 1. **Peta Profil Klaster K-Means ($k=4$)**:
-   * Menampilkan polarisasi geografis yang nyata: kawasan metropolitan utara/tengah (Biru), kawasan industri berbeban murid/guru tinggi (Cyan), kawasan Pantura/Ciayumajakuning dengan kemiskinan tinggi (Oranye), serta kawasan Jabar Selatan dengan sekolah kecil dan TKA rendah (Merah).
+   * Menampilkan polarisasi geografis yang nyata: kawasan metropolitan utara/tengah (Biru), kawasan industri berbeban murid/guru tinggi (Cyan), kawasan Pantura/Ciayumajakuning dengan kemiskinan tinggi (Oranye), serta kawasan Jabar Selatan dengan skala sekolah terbatas dan TKA rendah (Merah).
    * File: [`clustering/statistik_grafik/grafik_eda/peta_klaster_kmeans.png`](file:///clustering/statistik_grafik/grafik_eda/peta_klaster_kmeans.png).
 2. **Peta Indeks Prioritas Intervensi (IPI)**:
    * Memetakan 4 tingkatan urgensi alokasi anggaran (Merah = Prioritas 1 Mendesak, Oranye = Prioritas 2 Tinggi, Kuning = Prioritas 3 Menengah, Hijau = Prioritas 4 Mandiri).
@@ -399,6 +404,10 @@ klasterisasi-wilayah-tka/
 │           ├── matriks_korelasi.png                 # Heatmap korelasi awal
 │           ├── evaluasi_optimal_k.png               # Grafik evaluasi Elbow, Silhouette, DBI
 │           ├── visualisasi_klaster_kmeans.png       # 4-panel grafik hasil klasterisasi K-Means
+│           ├── klaster_scatter_tka_vs_kemiskinan.png # Scatter plot TKA vs Kemiskinan per wilayah
+│           ├── klaster_scatter_guru_vs_sekolah.png  # Scatter plot beban guru vs skala sekolah
+│           ├── klaster_fingerprint_zscore.png       # Bar chart fingerprint Z-score 4 pilar
+│           ├── klaster_distribusi_wilayah.png       # Distribusi jumlah kabupaten/kota per klaster
 │           ├── heatmap_korelasi.png                 # Heatmap korelasi antar-fitur analisis pendukung
 │           ├── scatter_regresi_tka.png              # Scatter plot + garis tren regresi linier TKA
 │           ├── boxplot_tka_per_klaster.png          # Boxplot sebaran nilai TKA per klaster
@@ -407,6 +416,8 @@ klasterisasi-wilayah-tka/
 │           ├── peta_spasial_klaster_dan_prioritas.png # Peta tematik komparatif 2-panel Jawa Barat
 │           ├── peta_klaster_kmeans.png              # Peta tematik sebaran 4 klaster K-Means
 │           └── peta_prioritas_intervensi.png        # Peta tematik sebaran prioritas intervensi
+├── docs/
+│   └── index.html                                   # Peta web interaktif untuk GitHub Pages hosting
 └── dataset/
     ├── jabar_smp_merged.csv                         # Dataset hasil integrasi seluruh variabel
     ├── fitur_kandidat_kmeans_smp.csv                # Dataset kandidat fitur sebelum standardisasi
